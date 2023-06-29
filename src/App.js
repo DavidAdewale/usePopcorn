@@ -52,36 +52,56 @@ export default function App() {
 
   return (
     <>
-      <NavBar movies={movies} />
-      <Main movies={movies} />
+      <NavBar>
+        <Search />
+        <NumResults movies={movies} />{' '}
+      </NavBar>
+      <Main>
+        <ListBox>
+          <MovieList movies={movies} />
+        </ListBox>
+        <WatchedBox />
+      </Main>
     </>
   );
 }
 
-function Main({ movies }) {
-  const [watched, setWatched] = useState(tempWatchedData);
-
+function NavBar({ children }) {
   return (
-    <main className="main">
-      <ListBox movies={movies} />
-      <WatchedBox watched={watched} />
-    </main>
+    <nav className="nav-bar">
+      <Logo />
+      {children}
+    </nav>
   );
 }
 
-function ListBox({ movies }) {
+function NumResults({ movies }) {
+  return (
+    <p className="num-results">
+      Found <strong>{movies.length}</strong> results
+    </p>
+  );
+}
+
+function Main({ children }) {
+  return <main className="main">{children}</main>;
+}
+
+function ListBox({ children }) {
   const [isOpen1, setIsOpen1] = useState(true);
   return (
     <div className="box">
       <Button isOpen={setIsOpen1}>{isOpen1 ? '–' : '+'}</Button>
 
-      {isOpen1 && <MovieList movies={movies} />}
+      {isOpen1 && children}
     </div>
   );
 }
 
-function WatchedBox({ watched }) {
+function WatchedBox() {
   const [isOpen2, setIsOpen2] = useState(true);
+  const [watched, setWatched] = useState(tempWatchedData);
+
   return (
     <div className="box">
       <Button isOpen={setIsOpen2}>{isOpen2 ? '–' : '+'}</Button>
@@ -104,16 +124,6 @@ function Button({ children, isOpen }) {
   );
 }
 
-function NavBar({ movies }) {
-  return (
-    <nav className="nav-bar">
-      <Logo />
-      <Search />
-      <NumResults movies={movies} />
-    </nav>
-  );
-}
-
 function Logo() {
   return (
     <div className="logo">
@@ -133,14 +143,6 @@ function Search() {
       value={query}
       onChange={(e) => setQuery(e.target.value)}
     />
-  );
-}
-
-function NumResults({ movies }) {
-  return (
-    <p className="num-results">
-      Found <strong>{movies.length}</strong> results
-    </p>
   );
 }
 
